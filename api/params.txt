@@ -1,0 +1,52 @@
+List of APIs:
+Domain: http://partyfindersdxb.com/
+
+Username: event
+Password: admin123
+
+
+- Get Category Data:
+URL: api/index.php?action=get_category
+
+------------------------------------------------------------
+
+- Get Post Data:
+URL: api/index.php?action=get_post
+
+Parameter ( Optional )
+post_id
+cat_id ( Get the events against the category ) and post_type = party
+
+--------------------------- Event ---------------------------------------
+post_type = events
+
+--------------------------- Weekly --------------------------------------
+
+post_type = weekly && day= Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
+
+------------------------------------------------------------
+
+- Form Submit:
+URL: api/index.php?action=form_submit
+
+---------------------- Booking ----------------------------
+
+Parameter ( Required )
+
+form_id = 3
+
+Parameter ( Optional )
+
+cpt_selection
+datetime
+first_name
+last_name
+email
+phone
+city
+dropdown
+dropdown_1
+description
+platform
+
+------------------------------------------------------------

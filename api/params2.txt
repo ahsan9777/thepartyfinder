@@ -1,0 +1,287 @@
+List of APIs:
+Domain: http://www.fixxify.nl/demo/
+
+Username: comfort
+Password: admin123
+
+
+- Get Banners:
+URL: api/index.php?action=get_banners
+Parameters:
+----------------------------------------------
+
+- Get Category Listing:
+URL: api/index.php?action=get_categories
+Parameters:
+----------------------------------------------
+
+- Get Home Categories:
+URL: api/index.php?action=get_home_categories
+Parameters:
+----------------------------------------------
+
+- Get Find Professional Section:
+URL: api/index.php?action=get_sec_find_professionals
+Parameters:
+
+----------------------------------------------
+
+- Get Popular Jobs:
+URL: api/index.php?action=get_popular_jobs
+Parameters:
+
+----------------------------------------------
+
+- Get User Roles:
+URL: api/index.php?action=get_user_roles
+Parameters:
+
+----------------------------------------------
+
+- User Login:
+URL: api/index.php?action=user_login
+Parameters:
+user_name  (Email should be used as username)
+user_password
+----------------------------------------------
+
+- Change Password:
+URL: api/index.php?action=change_password
+Parameters:
+mem_uid
+user_old_password
+user_new_password
+----------------------------------------------
+
+- Forgot Password:
+URL: api/index.php?action=forgot_password
+Parameters:
+user_name
+----------------------------------------------
+
+- User registration:
+URL: api/index.php?action=user_registration
+Parameters:
+user_name  (Email should be used as username)
+user_password
+urole_id
+user_fname
+user_lname
+user_dob
+gen_id
+user_phone
+----------------------------------------------
+
+- User Upload Photo:
+URL: api/index.php?action=uploadPhoto
+Parameters:
+mem_uid  (Loggin User ID)
+file (type file)
+----------------------------------------------
+
+- Update Profile:
+URL: api/index.php?action=update_profile
+Parameters:
+mem_uid  (Loggin User ID)
+user_fname
+user_lname
+user_dob
+gen_id
+user_phone
+user_address
+user_lat
+user_lng
+cat_ids (comma separated category ids)
+user_company_name
+user_kvk_number
+user_com_est_date
+user_details
+----------------------------------------------
+
+- Get User Profile:
+URL: api/index.php?action=user_profile
+Parameters:
+mem_uid  (Loggin User ID)
+----------------------------------------------
+
+- Get Contents:
+URL: api/index.php?action=get_contents
+Parameters:
+
+cnt_id
+----------------------------------------------
+
+- Post Job:
+URL: api/index.php?action=post_job
+Parameters:
+ad_id  (0 in case of new record)
+mem_uid  (Loggin User ID)
+cat_id
+ad_title
+ad_date
+ad_expiry
+ad_location
+ad_lat
+ad_lng
+ad_details
+relation_id  (Show Dropdown and use get_lov_relations API)
+ad_age_of_asset
+ad_duration
+----------------------------------------------
+
+- User Upload Photo:
+URL: api/index.php?action=upload_job_image
+Parameters:
+aimg_id   (0 in case of new record)
+ad_id
+file (type file)
+----------------------------------------------
+
+- Get LOV Relationship:
+URL: api/index.php?action=get_lov_relations
+Parameters:
+----------------------------------------------
+
+- Top Experts:
+URL: api/index.php?action=get_top_experts
+Parameters:
+----------------------------------------------
+
+- Get Experts:
+URL: api/index.php?action=get_experts
+Parameters:
+cat_id
+----------------------------------------------
+
+- Find Experts:
+URL: api/index.php?action=find_experts
+Parameters:
+ad_id
+----------------------------------------------
+
+- Get Latest Jobs:
+URL: api/index.php?action=get_latest_jobs
+Parameters:
+----------------------------------------------
+
+- My Posted Jobs:
+URL: api/index.php?action=my_posted_jobs
+Parameters:
+mem_uid (Logged In User ID)
+----------------------------------------------
+
+- Get Jobs:
+URL: api/index.php?action=get_jobs
+Parameters:
+cat_id
+----------------------------------------------
+
+- Get Job Details:
+URL: api/index.php?action=get_job_details
+Parameters:
+ad_id
+----------------------------------------------
+
+- Add / Update My Project:
+URL: api/index.php?action=add_udt_projects
+Parameters:
+mw_id
+mem_uid
+mw_title
+mw_details
+----------------------------------------------
+
+- Upload Project Image:
+URL: api/index.php?action=upload_project_image
+Parameters:
+mwi_id   (0 in case of new record)
+mw_id
+mwi_title
+file (type file)
+----------------------------------------------
+
+- My Projects:
+URL: api/index.php?action=my_projects
+Parameters:
+mem_uid (Logged In User ID)
+----------------------------------------------
+
+- Get Projects:
+URL: api/index.php?action=get_projects
+Parameters:
+mw_id (Logged In User ID)
+----------------------------------------------
+
+- Delete Project Image:
+URL: api/index.php?action=del_project_image
+Parameters:
+mwi_id
+----------------------------------------------
+
+- Delete Job Image:
+URL: api/index.php?action=del_job_image
+Parameters:
+aimg_id
+----------------------------------------------
+
+- Apply:
+URL: api/index.php?action=apply
+Parameters:
+mem_uid  (Loggin User ID)
+ad_id
+----------------------------------------------
+
+- Invite Expert:
+URL: api/index.php?action=invite
+Parameters:
+mem_uid  (Loggin User ID)
+ad_id
+expert_id
+----------------------------------------------
+
+- Jobs Applied:
+URL: api/index.php?action=get_jobs_applied
+Parameters:
+lang_id
+mem_uid  (Loggin User ID)
+----------------------------------------------
+
+- Show Invitations:
+URL: api/index.php?action=show_invitations
+Parameters:
+lang_id
+urole_id = 3
+mem_uid  (Loggin User ID)
+----------------------------------------------
+
+- Get My Invite List:
+URL: api/index.php?action=get_my_invites
+Parameters:
+lang_id
+urole_id = 4
+mem_uid  (Loggin User ID)
+----------------------------------------------
+
+- Award API:
+URL: api/index.php?action=award
+Parameters:
+expert_id  (Selected Expert ID)
+ad_id
+----------------------------------------------
+
+- Update Job Status:
+URL: api/index.php?action=update_job_status
+Parameters:
+ad_id
+ast_id  (Status ID)
+----------------------------------------------
+
+- Add User Reviews:
+URL: api/index.php?action=add_to_cart
+Parameters:
+mem_uid  (Logged in User ID / Client ID)
+expert_id
+ad_id
+rev_rate   (Value between 1 - 5)
+rev_comment   (Reviews Message)
+----------------------------------------------
