@@ -1,52 +1,71 @@
 List of APIs:
-Domain: http://partyfindersdxb.com/
+Domain: http://partyfindersdxb.com/api/
 
 Username: event
 Password: admin123
 
 
-- Get Category Data:
-URL: api/index.php?action=get_category
+- Get Nav Event Data:
+URL: api/index.php?action=get_nav_event
 
 ------------------------------------------------------------
 
-- Get Post Data:
+- Get Event Post Data:
 URL: api/index.php?action=get_post
 
 Parameter ( Optional )
-post_id
-cat_id ( Get the events against the category ) and post_type = party
-
---------------------------- Event ---------------------------------------
-post_type = events
-
---------------------------- Weekly --------------------------------------
-
-post_type = weekly && day= Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
+event_index ( Set the value in the parameter to get the specific data against the events like Nightclub otherwise show all events )
+post_id ( Set the value in the parameter to get the specific data against the post_id otherwise, show all events )
 
 ------------------------------------------------------------
 
-- Form Submit:
-URL: api/index.php?action=form_submit
+- Get Nav Event Weekly Data:
+URL: api/index.php?action=get_nav_event_weekly
 
----------------------- Booking ----------------------------
+------------------------------------------------------------
 
-Parameter ( Required )
-
-form_id = 3
+- Get Weekly Post Data:
+URL: api/index.php?action=get_weekly_post
 
 Parameter ( Optional )
 
-cpt_selection
-datetime
-first_name
-last_name
-email
-phone
-city
-dropdown
-dropdown_1
-description
-platform
+day ( Set the value in the parameter to get the specific events data against the day like Monday otherwise show all events of the days )
 
 ------------------------------------------------------------
+
+- Get Story Data:
+URL: api/index.php?action=get_story
+
+--------------------------------------------------------------
+
+- Get Top Venue Data:
+URL: api/index.php?action=get_top_venue
+
+--------------------------------------------------------------
+
+- Get Ladies Night Data:
+URL: api/index.php?action=get_ladies_night
+
+--------------------------------------------------------------
+
+- Get Main Video Data:
+URL: api/index.php?action=get_video
+
+--------------------------------------------------------------
+
+- Get Weekly Calendar PDF Data:
+URL: api/index.php?action=get_pdf
+
+--------------------------------------------------------------
+
+- Form Submit For Email:
+URL: api/index.php?action=form_submit
+
+Required Parameters:
+
+event_name
+vanue_name
+full_name
+phone_no
+
+--------------------------------------------------------------

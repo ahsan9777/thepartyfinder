@@ -73,22 +73,8 @@ class Main
             $order_by = "ORDER BY p.ID DESC";
         }
 
-        if (isset($params['post_type']) && $params['post_type'] == 'weekly' && isset($params['day'])) {
-            $day = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
-            if (in_array($params['day'], $day)) {
-                $meta_value = $params['day'];
-            } else {
-                $meta_value = "Sunday";
-            }
-            //$qryWhere = " AND p.post_parent = '14' AND  p.ID IN (SELECT pm.post_id FROM wp_postmeta AS pm WHERE pm.meta_key = 'archive_events_more' AND meta_value = '' AND pm.post_id = p.ID) AND p.ID IN (SELECT pm.post_id FROM wp_postmeta AS pm WHERE pm.meta_key = 'day_events_more' AND meta_value LIKE '%".$meta_value."%' AND pm.post_id = p.ID)";
-            $qryWhere = " AND p.post_parent = '14' AND  p.ID IN (SELECT pm.post_id FROM wp_postmeta AS pm WHERE pm.meta_key = 'archive_events_more' AND meta_value = '' AND pm.post_id = p.ID) AND p.ID IN (SELECT pm.post_id FROM wp_postmeta AS pm WHERE pm.meta_key = 'day_events_more' AND meta_value LIKE '%" . $meta_value . "%' AND pm.post_id = p.ID)";
-        }
-
         if (isset($params['post_id']) && $params['post_id'] > 0) {
             $qryWhere .= " AND p.ID = '" . $params['post_id'] . "'";
-        }
-        if (isset($params['cat_id']) && $params['cat_id'] > 0) {
-            $qryWhere .= " AND p.ID IN (SELECT tr.object_id FROM wp_term_relationships AS tr WHERE tr.term_taxonomy_id = '" . $params['cat_id'] . "')";
         }
 
         //$Query = "SELECT p.ID, p.post_modified, p.post_author, p.post_title, p.guid,  (SELECT vp.guid FROM wp_posts AS vp WHERE vp.post_type = 'attachment' AND vp.post_mime_type LIKE 'image/%' AND vp.ID = (SELECT meta_value FROM `wp_postmeta` WHERE post_id = p.ID AND meta_key = 'thumbnail_events_more')) AS thumbnail_image_url, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'location_name_events_more') AS post_location, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'day_events_more') AS post_day, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'time_events_more') AS post_time, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'capacity_events_more') AS post_capacity, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'category_events_more') AS post_category FROM wp_posts AS p  WHERE p.post_status='publish' AND p.post_type = 'page' " . $qryWhere . " ".$order_by." ";
