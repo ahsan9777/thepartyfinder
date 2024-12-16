@@ -85,5 +85,11 @@ class Actions {
         return $retValue;
     }
 
+    public function get_title($params){
+        
+        $retValue = $this->main->get_title($params);
+        return $retValue;
+    }
+
     
 }

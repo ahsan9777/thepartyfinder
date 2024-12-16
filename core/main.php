@@ -308,6 +308,32 @@ class Main
         return $retValue;
     }
 
+    public function get_venue_title($params)
+    {
+        $tempArray = array();
+        $retValue = array();
+        $Query = "SELECT pm.*, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value AND pm.meta_key LIKE '%_img_top_venue_list' WHERE pm.post_id = '5821' AND pm.meta_key LIKE 'top_venue_list_%'";
+        $rs = mysqli_query($GLOBALS['conn'], $Query);
+        if (mysqli_num_rows($rs) > 0) {
+            $retValue = array("status" => "1", "message" => "Get top vanue title data");
+            while ($rw = mysqli_fetch_object($rs)) {
+                $metaKey = $rw->meta_key;
+
+                if (strpos($metaKey, '_name_top_venue_list') !== false) {
+                    $tempArray['title'] = $rw->meta_value;
+                }
+
+                if (isset($tempArray['title'])) {
+                    $retValue['data'][] = array(
+                        'vanue_title' => $tempArray['title']
+                    );
+                    $tempArray = array();
+                }
+            }
+        }
+        return $retValue;
+    }
+
     public function get_ladies_night($params)
     {
         $tempArray = array();
@@ -395,8 +421,8 @@ class Main
     public function form_submit($params)
     {
         $retValue = array();
-           
-        $this->mailer->form_submit($params['event_name'], $params['vanue_name'],  $params['full_name'],  $params['phone_no']);  
+
+        $this->mailer->form_submit($params['event_name'], $params['vanue_name'],  $params['full_name'],  $params['phone_no']);
         $retValue = array("status" => "1", "message" => "Record Added Successfully");
 
         return $retValue;
@@ -525,6 +551,56 @@ class Main
         $retValue = array();
         //echo "email_test";die();
         $retValue = array("mail-test" => $this->mailer->test($params['to']));
+        return $retValue;
+    }
+
+    public function get_title($params)
+    {
+        $retValue = array();
+        $order_by = "";
+        if (isset($params['title']) && $params['title'] == 'event') {
+            $qryWhere = " AND p.post_parent = '14' AND p.ID IN (SELECT pm.post_id FROM wp_postmeta AS pm WHERE pm.meta_key = 'archive_events_more' AND meta_value = '' AND pm.post_id = p.ID)";
+            $order_by = "ORDER BY p.ID DESC";
+
+            $Query = "SELECT p.ID,  p.post_title FROM wp_posts AS p  WHERE p.post_status='publish' AND p.post_type = 'page' " . $qryWhere . " " . $order_by . " ";
+            //print($Query);die();
+            $rs = mysqli_query($GLOBALS['conn'], $Query);
+            if (mysqli_num_rows($rs) > 0) {
+                $retValue = array("status" => "1", "message" => "Get event title data");
+                while ($rw = mysqli_fetch_object($rs)) {
+                    $retValue['data'][] = array(
+                        //"event_id" => $rw->ID,
+                        "title" => strval($rw->post_title),
+                    );
+                }
+            } else {
+                $retValue = array("status" => "0", "message" => "Record not found!");
+            }
+        } elseif (isset($params['title']) && $params['title'] == 'vanue') {
+
+            $tempArray = array();
+           $Query = "SELECT pm.*, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value AND pm.meta_key LIKE '%_img_top_venue_list' WHERE pm.post_id = '5821' AND pm.meta_key LIKE 'top_venue_list_%'";
+            $rs = mysqli_query($GLOBALS['conn'], $Query);
+            if (mysqli_num_rows($rs) > 0) {
+                $retValue = array("status" => "1", "message" => "Get top vanue title data");
+                while ($rw = mysqli_fetch_object($rs)) {
+                    $metaKey = $rw->meta_key;
+
+                    if (strpos($metaKey, '_name_top_venue_list') !== false) {
+                        $tempArray['title'] = $rw->meta_value;
+                    }
+
+                    if (isset($tempArray['title'])) {
+                        $retValue['data'][] = array(
+                            'title' => $tempArray['title']
+                        );
+                        $tempArray = array();
+                    }
+                }
+            }
+        } else {
+            $retValue = array("status" => "0", "message" => "Please set the required parameter");
+        }
         return $retValue;
     }
 }
