@@ -78,7 +78,7 @@ class Main
         }
 
         //$Query = "SELECT p.ID, p.post_modified, p.post_author, p.post_title, p.guid,  (SELECT vp.guid FROM wp_posts AS vp WHERE vp.post_type = 'attachment' AND vp.post_mime_type LIKE 'image/%' AND vp.ID = (SELECT meta_value FROM `wp_postmeta` WHERE post_id = p.ID AND meta_key = 'thumbnail_events_more')) AS thumbnail_image_url, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'location_name_events_more') AS post_location, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'day_events_more') AS post_day, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'time_events_more') AS post_time, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'capacity_events_more') AS post_capacity, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'category_events_more') AS post_category FROM wp_posts AS p  WHERE p.post_status='publish' AND p.post_type = 'page' " . $qryWhere . " ".$order_by." ";
-        $Query = "SELECT p.ID, p.post_modified, p.post_author, p.post_title, p.guid,  (SELECT vp.guid FROM wp_posts AS vp WHERE vp.post_type = 'attachment' AND vp.post_mime_type LIKE 'image/%' AND vp.ID = (SELECT meta_value FROM `wp_postmeta` WHERE post_id = p.ID AND meta_key = 'thumbnail_events_more')) AS thumbnail_image_url, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'location_events_more') AS post_location, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'day_events_more') AS post_day, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'time_events_more') AS post_time, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'instagram_events_more') AS post_instagram, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'music_events_more') AS post_music, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'category_events_more') AS post_category FROM wp_posts AS p  WHERE p.post_status='publish' AND p.post_type = 'page' " . $qryWhere . " " . $order_by . " ";
+        $Query = "SELECT p.ID, p.post_modified, p.post_author, p.post_title, p.guid,  (SELECT vp.guid FROM wp_posts AS vp WHERE vp.post_type = 'attachment' AND vp.post_mime_type LIKE 'image/%' AND vp.ID = (SELECT meta_value FROM `wp_postmeta` WHERE post_id = p.ID AND meta_key = 'thumbnail_events_more')) AS thumbnail_image_url, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'location_events_more') AS post_location, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'day_events_more') AS post_day, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'time_events_more') AS post_time, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'instagram_events_more') AS post_instagram, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'music_events_more') AS post_music, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'category_events_more') AS post_category, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'story_video_events_more') AS story_link FROM wp_posts AS p  WHERE p.post_status='publish' AND p.post_type = 'page' " . $qryWhere . " " . $order_by . " ";
         //print($Query);die();
         $rs = mysqli_query($GLOBALS['conn'], $Query);
         if (mysqli_num_rows($rs) > 0) {
@@ -104,6 +104,7 @@ class Main
                                 "post_music" => strval($rw->post_music),
                                 "post_instagram" => strval("@" . $rw->post_instagram),
                                 "post_capacity" => "",
+                                "story_link" => strval($rw->story_link),
                                 "thumbnail_image_url" => strval($rw->thumbnail_image_url),
                                 //"post_category" => unserialize($rw->post_category),
                                 //"post_category" => $this->post_category($arr),
@@ -125,6 +126,7 @@ class Main
                         "post_music" => strval($rw->post_music),
                         "post_instagram" => strval("@" . $rw->post_instagram),
                         "post_capacity" => "",
+                        "story_link" => strval($rw->story_link),
                         "thumbnail_image_url" => strval($rw->thumbnail_image_url),
                         //"post_category" => unserialize($rw->post_category),
                         //"post_category" => $this->post_category($arr),
@@ -149,6 +151,7 @@ class Main
         $retValue = array();
         //$Query1 = "SELECT pm.meta_value FROM wp_postmeta AS pm WHERE pm.post_id = '15' AND pm.meta_key LIKE '%_url_".$day."_weekly_event' AND pm.meta_key NOT LIKE '_".$day."_weekly_events%'";
         $Query1 = "SELECT pm.*, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value AND pm.meta_key LIKE '%_image_" . $day . "_weekly_event' WHERE pm.post_id = '15' AND pm.meta_key LIKE '" . $day . "_weekly_events_%' ORDER BY pm.meta_key ASC;";
+        //print($Query1);
         $rs1 = mysqli_query($GLOBALS['conn'], $Query1);
         if (mysqli_num_rows($rs1) > 0) {
             $retValue = array("status" => "1", "message" => "Get weekly post data");
@@ -182,6 +185,7 @@ class Main
                         'post_capacity' => $tempArray['post_capacity'] . " Capacity",
                         'post_music' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['post_id'], "AND meta_key = 'music_events_more'"),
                         'post_instagram' => "@" . $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['post_id'], "AND meta_key = 'instagram_events_more'"),
+                        'story_link' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['post_id'], "AND meta_key = 'story_video_events_more'"),
                         'thumbnail_image_url' => $tempArray['thumbnail_image_url'],
                         "essentials_events_detail" => $this->essentials_events_detail($tempArray)
                     );
