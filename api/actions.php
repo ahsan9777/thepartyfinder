@@ -49,6 +49,12 @@ class Actions {
     }
     
     
+    public function get_venue($params){
+        
+        $retValue = $this->main->get_venue($params);
+        return $retValue;
+    }
+    
     public function get_top_venue($params){
         
         $retValue = $this->main->get_top_venue($params);

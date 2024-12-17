@@ -277,6 +277,51 @@ class Main
     }
 
 
+    public function get_venue($params)
+    {
+        $tempArray = array();
+        $retValue = array();
+        $Query = "SELECT pm.*, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value AND pm.meta_key LIKE '%_image_venue_item' WHERE pm.post_id = '12' AND pm.meta_key LIKE 'venues_items_%'  ORDER BY CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(pm.meta_key, 'venues_items_', -1), '_', 1) AS UNSIGNED), pm.meta_key ASC";
+        $rs = mysqli_query($GLOBALS['conn'], $Query);
+        if (mysqli_num_rows($rs) > 0) {
+            $retValue = array("status" => "1", "message" => "Get vanue data");
+            while ($rw = mysqli_fetch_object($rs)) {
+                $metaKey = $rw->meta_key;
+                //print_r($metaKey);die();
+                if (strpos($metaKey, '_archive_venue_item') !== false) {
+                    $archive_venue_item = $rw->meta_value;
+                }
+                //print($action_venue_item);die();
+                if(empty($archive_venue_item) ){
+                    if (strpos($metaKey, '_url_venue_item') !== false) {
+                        $tempArray['id'] = $rw->meta_value;
+                    } elseif (strpos($metaKey, '_name_venue_item') !== false) {
+                        $tempArray['title'] = $rw->meta_value;
+                    } elseif (strpos($metaKey, '_location_venue_item') !== false) {
+                        $tempArray['location'] = $rw->meta_value;
+                    } elseif (strpos($metaKey, '_category_venue_item') !== false) {
+                        $tempArray['category'] = $rw->meta_value;
+                    } elseif (strpos($metaKey, '_image_venue_item') !== false) {
+                        $tempArray['image'] = $rw->guid;
+                    }
+                }
+
+                if (isset($tempArray['id']) && isset($tempArray['image']) && isset($tempArray['title']) && isset($tempArray['location']) && isset($tempArray['category'])) {
+                    $retValue['data'][] = array(
+                        'vanue_id' => $tempArray['id'],
+                        'vanue_image' => $tempArray['image'],
+                        'vanue_title' => $tempArray['title'],
+                        'vanue_location' => $tempArray['location'],
+                        'vanue_category' => $tempArray['category']
+                        //"essentials_vanue_detail" => $this->essentials_events_detail($tempArray)
+                    );
+                    $tempArray = array();
+                }
+            }
+        }
+        return $retValue;
+    }
+
     public function get_top_venue($params)
     {
         $tempArray = array();
