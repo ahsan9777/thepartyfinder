@@ -76,6 +76,16 @@ class Main
         if (isset($params['post_id']) && $params['post_id'] > 0) {
             $qryWhere .= " AND p.ID = '" . $params['post_id'] . "'";
         }
+        
+        if (isset($params['event_url']) && !empty($params['event_url']) ) {
+            $parsedUrl = parse_url($params['event_url']);
+            $path = $parsedUrl['path'];
+
+            $segments = explode('/', trim($path, '/'));
+            $slug = end($segments);
+
+            $qryWhere .= " AND p.post_name = '" . $slug . "'";
+        }
 
         //$Query = "SELECT p.ID, p.post_modified, p.post_author, p.post_title, p.guid,  (SELECT vp.guid FROM wp_posts AS vp WHERE vp.post_type = 'attachment' AND vp.post_mime_type LIKE 'image/%' AND vp.ID = (SELECT meta_value FROM `wp_postmeta` WHERE post_id = p.ID AND meta_key = 'thumbnail_events_more')) AS thumbnail_image_url, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'location_name_events_more') AS post_location, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'day_events_more') AS post_day, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'time_events_more') AS post_time, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'capacity_events_more') AS post_capacity, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'category_events_more') AS post_category FROM wp_posts AS p  WHERE p.post_status='publish' AND p.post_type = 'page' " . $qryWhere . " ".$order_by." ";
         $Query = "SELECT p.ID, p.post_modified, p.post_author, p.post_title, p.guid,  (SELECT vp.guid FROM wp_posts AS vp WHERE vp.post_type = 'attachment' AND vp.post_mime_type LIKE 'image/%' AND vp.ID = (SELECT meta_value FROM `wp_postmeta` WHERE post_id = p.ID AND meta_key = 'thumbnail_events_more')) AS thumbnail_image_url, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'location_events_more') AS post_location, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'day_events_more') AS post_day, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'time_events_more') AS post_time, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'instagram_events_more') AS post_instagram, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'music_events_more') AS post_music, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'category_events_more') AS post_category, (SELECT day_pm.meta_value FROM wp_postmeta AS day_pm WHERE day_pm.post_id = p.ID AND day_pm.meta_key = 'story_video_events_more') AS story_link FROM wp_posts AS p  WHERE p.post_status='publish' AND p.post_type = 'page' " . $qryWhere . " " . $order_by . " ";
@@ -147,6 +157,8 @@ class Main
         } else {
             $day = "sunday";
         }
+
+        
         $tempArray = array();
         $retValue = array();
         //$Query1 = "SELECT pm.meta_value FROM wp_postmeta AS pm WHERE pm.post_id = '15' AND pm.meta_key LIKE '%_url_".$day."_weekly_event' AND pm.meta_key NOT LIKE '_".$day."_weekly_events%'";
@@ -281,7 +293,22 @@ class Main
     {
         $tempArray = array();
         $retValue = array();
+
+        $vanue_url_id = 0;
+        if (isset($params['vanue_url']) && !empty($params['vanue_url']) ) {
+            $parsedUrl = parse_url($params['vanue_url']);
+            $path = $parsedUrl['path'];
+
+            $segments = explode('/', trim($path, '/'));
+            $slug = end($segments);
+
+            //$qryWhere .= " AND p.post_name = '" . $slug . "'";
+            $vanue_url_id = $this->func->returnName("ID", "wp_posts", "post_name", $slug, "AND post_parent = '12'");
+            //print($vanue_url_id);die();
+        }
+
         $Query = "SELECT pm.*, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value AND pm.meta_key LIKE '%_image_venue_item' WHERE pm.post_id = '12' AND pm.meta_key LIKE 'venues_items_%'  ORDER BY CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(pm.meta_key, 'venues_items_', -1), '_', 1) AS UNSIGNED), pm.meta_key ASC";
+        //print($Query);die();
         $rs = mysqli_query($GLOBALS['conn'], $Query);
         if (mysqli_num_rows($rs) > 0) {
             $retValue = array("status" => "1", "message" => "Get vanue data");
@@ -291,7 +318,10 @@ class Main
                 if (strpos($metaKey, '_archive_venue_item') !== false) {
                     $archive_venue_item = $rw->meta_value;
                 }
+                
                 //print($action_venue_item);die();
+            
+
                 if(empty($archive_venue_item) ){
                     if (strpos($metaKey, '_url_venue_item') !== false) {
                         $tempArray['id'] = $rw->meta_value;
@@ -307,13 +337,98 @@ class Main
                 }
 
                 if (isset($tempArray['id']) && isset($tempArray['image']) && isset($tempArray['title']) && isset($tempArray['location']) && isset($tempArray['category'])) {
-                    $retValue['data'][] = array(
-                        'vanue_id' => $tempArray['id'],
-                        'vanue_image' => $tempArray['image'],
-                        'vanue_title' => $tempArray['title'],
-                        'vanue_location' => $tempArray['location'],
-                        'vanue_category' => $tempArray['category']
-                        //"essentials_vanue_detail" => $this->essentials_events_detail($tempArray)
+                    if($vanue_url_id > 0){
+                    
+                        if($vanue_url_id == $tempArray['id'] ){
+                            $retValue['data'][] = array(
+                                'vanue_id' => $tempArray['id'],
+                                'vanue_image' => $tempArray['image'],
+                                'vanue_title' => $tempArray['title'],
+                                'vanue_location' => $tempArray['location'],
+                                'vanue_category' => $tempArray['category'],
+                                'vanue_story_link' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['id'], "AND meta_key = 'story_video_venues_more'"),
+                                'vanue_status' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['id'], "AND meta_key = 'status_venues_more'"),
+                                'vanue_address' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['id'], "AND meta_key = 'location_venue_more'"),
+                                'vanue_video_link' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['id'], "AND meta_key = 'video_iframe_venues_more'"),
+                                "vanue_gallery" => $this->get_vanue_gallery($tempArray),
+                                "vanue_amenities" => $this->get_vanue_amenities($tempArray),
+                                "vanue_upcoming" => $this->get_vanue_upcoming($tempArray)
+                                //"essentials_vanue_detail" => $this->essentials_events_detail($tempArray)
+                            ); 
+                        }
+                    } else{
+                        $retValue['data'][] = array(
+                            'vanue_id' => $tempArray['id'],
+                            'vanue_image' => $tempArray['image'],
+                            'vanue_title' => $tempArray['title'],
+                            'vanue_location' => $tempArray['location'],
+                            'vanue_category' => $tempArray['category']
+                            //"essentials_vanue_detail" => $this->essentials_events_detail($tempArray)
+                        );  
+                    }
+                    $tempArray = array(); 
+                }
+            }
+        }
+        return $retValue;
+    }
+
+    
+    public function get_vanue_gallery($params)
+    {
+        $retValue = array();
+        $Query = "SELECT pm.*, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value WHERE post_id = '".$params['id']."' AND meta_key LIKE 'gallery_venues_more_%' ";
+        //print($Query);die();
+        $rs = mysqli_query($GLOBALS['conn'], $Query);
+        if (mysqli_num_rows($rs) > 0) {
+            while ($rw = mysqli_fetch_object($rs)) {
+                $retValue[] = array(
+                    "image" => strval($rw->guid)
+                );
+            }
+        }
+        return $retValue;
+    }
+    
+    public function get_vanue_amenities($params)
+    {
+        $retValue = array();
+        $Query = "SELECT * FROM wp_postmeta WHERE post_id = '".$params['id']."' AND meta_key LIKE 'amenities_venue_more_%' AND meta_key NOT LIKE '%_icon_amenities_venue_more' ";
+        //print($Query);die();
+        $rs = mysqli_query($GLOBALS['conn'], $Query);
+        if (mysqli_num_rows($rs) > 0) {
+            while ($rw = mysqli_fetch_object($rs)) {
+                $retValue[] = array(
+                    "amenitie_title" => strval($rw->meta_value)
+                );
+            }
+        }
+        return $retValue;
+    }
+    
+    public function get_vanue_upcoming($params)
+    {
+        $retValue = array();
+        $Query = "SELECT * FROM wp_postmeta WHERE post_id = '".$params['id']."' AND meta_key LIKE 'upcoming_events_venue_more_%' ORDER BY meta_key ASC ";
+        //print($Query);die();
+        $rs = mysqli_query($GLOBALS['conn'], $Query);
+        if (mysqli_num_rows($rs) > 0) {
+            while ($rw = mysqli_fetch_object($rs)) {
+                $metaKey = $rw->meta_key;
+
+                if (strpos($metaKey, '_name_upcoming_events_venue_more') !== false) {
+                    $tempArray['title'] = $rw->meta_value;
+                } elseif (strpos($metaKey, '_day_upcoming_events_venue_more') !== false) {
+                    $tempArray['day'] = $rw->meta_value;
+                } elseif (strpos($metaKey, '_time_upcoming_events_venue_more') !== false) {
+                    $tempArray['time'] = $rw->meta_value;
+                }
+
+                if (isset($tempArray['title']) && isset($tempArray['day']) && isset($tempArray['time'])) {
+                    $retValue[] = array(
+                        'upcoming_title' => $tempArray['title'],
+                        'upcoming_day' => $tempArray['day'],
+                        'upcoming_time' => $tempArray['time']
                     );
                     $tempArray = array();
                 }
@@ -321,7 +436,6 @@ class Main
         }
         return $retValue;
     }
-
     public function get_top_venue($params)
     {
         $tempArray = array();
