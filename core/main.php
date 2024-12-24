@@ -291,10 +291,12 @@ class Main
 
     public function get_venue($params)
     {
+        //print_r($params);die();
         $tempArray = array();
         $retValue = array();
 
         $vanue_url_id = 0;
+        $post_id = array();
         if (isset($params['vanue_url']) && !empty($params['vanue_url']) ) {
             $parsedUrl = parse_url($params['vanue_url']);
             $path = $parsedUrl['path'];
@@ -305,6 +307,14 @@ class Main
             //$qryWhere .= " AND p.post_name = '" . $slug . "'";
             $vanue_url_id = $this->func->returnName("ID", "wp_posts", "post_name", $slug, "AND post_parent = '12'");
             //print($vanue_url_id);die();
+        }
+        
+        if (isset($params['vanue_location']) && !empty($params['vanue_location']) ) {
+            
+            $post_id = $this->func->returnNameArray("post_id", "wp_postmeta", "meta_value", $params['vanue_location'], "AND meta_key = 'location_venue_more'");
+            $post_id = array_column($post_id, 'field');
+            //print("<pre>");
+            //print_r($post_id);die();
         }
 
         $Query = "SELECT pm.*, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value AND pm.meta_key LIKE '%_image_venue_item' WHERE pm.post_id = '12' AND pm.meta_key LIKE 'venues_items_%'  ORDER BY CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(pm.meta_key, 'venues_items_', -1), '_', 1) AS UNSIGNED), pm.meta_key ASC";
@@ -325,6 +335,7 @@ class Main
                 if(empty($archive_venue_item) ){
                     if (strpos($metaKey, '_url_venue_item') !== false) {
                         $tempArray['id'] = $rw->meta_value;
+                        
                     } elseif (strpos($metaKey, '_name_venue_item') !== false) {
                         $tempArray['title'] = $rw->meta_value;
                     } elseif (strpos($metaKey, '_location_venue_item') !== false) {
@@ -337,9 +348,9 @@ class Main
                 }
 
                 if (isset($tempArray['id']) && isset($tempArray['image']) && isset($tempArray['title']) && isset($tempArray['location']) && isset($tempArray['category'])) {
-                    if($vanue_url_id > 0){
-                    
-                        if($vanue_url_id == $tempArray['id'] ){
+                    if($vanue_url_id > 0 || !empty($post_id)){
+                        //echo "if";die();
+                        if( ($vanue_url_id == $tempArray['id']) || in_array($tempArray['id'], $post_id) ){
                             $retValue['data'][] = array(
                                 'vanue_id' => $tempArray['id'],
                                 'vanue_image' => $tempArray['image'],
@@ -742,14 +753,16 @@ class Main
         } elseif (isset($params['title']) && $params['title'] == 'vanue') {
 
             $tempArray = array();
-           $Query = "SELECT pm.*, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value AND pm.meta_key LIKE '%_img_top_venue_list' WHERE pm.post_id = '5821' AND pm.meta_key LIKE 'top_venue_list_%'";
+           //$Query = "SELECT pm.*, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value AND pm.meta_key LIKE '%_img_top_venue_list' WHERE pm.post_id = '5821' AND pm.meta_key LIKE 'top_venue_list_%'";
+           $Query = "SELECT pm.* FROM wp_postmeta AS pm WHERE pm.post_id = '12' AND pm.meta_key LIKE 'venues_items_%'  ORDER BY CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(pm.meta_key, 'venues_items_', -1), '_', 1) AS UNSIGNED), pm.meta_key ASC";
+           //print("$Query");die();
             $rs = mysqli_query($GLOBALS['conn'], $Query);
             if (mysqli_num_rows($rs) > 0) {
                 $retValue = array("status" => "1", "message" => "Get top vanue title data");
                 while ($rw = mysqli_fetch_object($rs)) {
                     $metaKey = $rw->meta_key;
 
-                    if (strpos($metaKey, '_name_top_venue_list') !== false) {
+                    if (strpos($metaKey, '_name_venue_item') !== false) {
                         $tempArray['title'] = $rw->meta_value;
                     }
 

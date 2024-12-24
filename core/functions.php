@@ -277,6 +277,22 @@ class Functions{
 		return $retRes;	
 	}
 
+	public function returnNameArray($Field, $Table, $IDField, $ID, $and = ""){
+		$retValue = array();
+		
+		$Query = "SELECT $Field AS field FROM $Table WHERE $IDField='".$this->dbStr($ID)."' ".$and." ";
+		//print($Query);
+        $rs = mysqli_query($GLOBALS['conn'], $Query);
+        if (mysqli_num_rows($rs) > 0) {
+            while ($rw = mysqli_fetch_object($rs)) {
+                $retValue[] = array(
+                    "field" => $rw->field
+                );
+            }
+        }
+        return $retValue;
+	}
+
 	public function returnNameRepDash($Field, $Table, $IDField, $ID){
 		$retRes = "";
 		$strQry = "SELECT $Field FROM $Table WHERE REPLACE($IDField, '-', ' ')='".$this->dbStr($ID)."' LIMIT 1";
