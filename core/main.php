@@ -309,13 +309,13 @@ class Main
             //print($vanue_url_id);die();
         }
         
-        if (isset($params['vanue_location']) && !empty($params['vanue_location']) ) {
+        /*if (isset($params['vanue_location']) && !empty($params['vanue_location']) ) {
             
             $post_id = $this->func->returnNameArray("post_id", "wp_postmeta", "meta_value", $params['vanue_location'], "AND meta_key = 'location_venue_more'");
             $post_id = array_column($post_id, 'field');
             //print("<pre>");
             //print_r($post_id);die();
-        }
+        }*/
 
         $Query = "SELECT pm.*, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value AND pm.meta_key LIKE '%_image_venue_item' WHERE pm.post_id = '12' AND pm.meta_key LIKE 'venues_items_%'  ORDER BY CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(pm.meta_key, 'venues_items_', -1), '_', 1) AS UNSIGNED), pm.meta_key ASC";
         //print($Query);die();
@@ -350,12 +350,14 @@ class Main
                 if (isset($tempArray['id']) && isset($tempArray['image']) && isset($tempArray['title']) && isset($tempArray['location']) && isset($tempArray['category'])) {
                     if($vanue_url_id > 0 || !empty($post_id)){
                         //echo "if";die();
-                        if( ($vanue_url_id == $tempArray['id']) || in_array($tempArray['id'], $post_id) ){
+                        //if( ($vanue_url_id == $tempArray['id']) || in_array($tempArray['id'], $post_id) ){
+                        if( $vanue_url_id == $tempArray['id'] ){
                             $retValue['data'][] = array(
                                 'vanue_id' => $tempArray['id'],
                                 'vanue_image' => $tempArray['image'],
                                 'vanue_title' => $tempArray['title'],
-                                'vanue_location' => $tempArray['location'],
+                                //'vanue_location' => $tempArray['location'],
+                                'vanue_location' => $this->func->returnName("guid", "wp_posts", "ID", $tempArray['id'], "AND post_parent = '12'"),
                                 'vanue_category' => $tempArray['category'],
                                 'vanue_story_link' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['id'], "AND meta_key = 'story_video_venues_more'"),
                                 'vanue_status' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['id'], "AND meta_key = 'status_venues_more'"),
@@ -372,7 +374,7 @@ class Main
                             'vanue_id' => $tempArray['id'],
                             'vanue_image' => $tempArray['image'],
                             'vanue_title' => $tempArray['title'],
-                            'vanue_location' => $tempArray['location'],
+                            'vanue_location' => $this->func->returnName("guid", "wp_posts", "ID", $tempArray['id'], "AND post_parent = '12'"),
                             'vanue_category' => $tempArray['category']
                             //"essentials_vanue_detail" => $this->essentials_events_detail($tempArray)
                         );  
