@@ -358,6 +358,7 @@ class Main
                                 'vanue_title' => $tempArray['title'],
                                 //'vanue_location' => $tempArray['location'],
                                 'vanue_location' => $this->func->returnName("guid", "wp_posts", "ID", $tempArray['id'], "AND post_parent = '12'"),
+                                'vanue_address' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['id'], "AND meta_key = 'location_venue_more'"),
                                 'vanue_category' => $tempArray['category'],
                                 'vanue_story_link' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['id'], "AND meta_key = 'story_video_venues_more'"),
                                 'vanue_status' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['id'], "AND meta_key = 'status_venues_more'"),
@@ -375,6 +376,7 @@ class Main
                             'vanue_image' => $tempArray['image'],
                             'vanue_title' => $tempArray['title'],
                             'vanue_location' => $this->func->returnName("guid", "wp_posts", "ID", $tempArray['id'], "AND post_parent = '12'"),
+                            'vanue_address' => $this->func->returnName("meta_value", "wp_postmeta", "post_id", $tempArray['id'], "AND meta_key = 'location_venue_more'"),
                             'vanue_category' => $tempArray['category']
                             //"essentials_vanue_detail" => $this->essentials_events_detail($tempArray)
                         );  
