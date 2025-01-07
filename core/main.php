@@ -579,7 +579,8 @@ class Main
         } else {
             $video_list = 0;
         }
-        $Query = "SELECT pm.meta_value, p.ID, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value WHERE pm.post_id = '7886' AND pm.meta_key = 'weekly_calendar_" . $video_list . "_pdf_weekly_calendar' ";
+        //$Query = "SELECT pm.meta_value, p.ID, p.guid FROM wp_postmeta AS pm LEFT OUTER JOIN wp_posts AS p ON p.ID = pm.meta_value WHERE pm.post_id = '7886' AND pm.meta_key = 'weekly_calendar_" . $video_list . "_pdf_weekly_calendar' ";
+        $Query = "SELECT guid FROM `wp_posts` WHERE post_parent = '7886' AND post_mime_type = 'application/pdf' ORDER BY post_date DESC LIMIT 0,1 ";
         //print($Query);die();
         $rs = mysqli_query($GLOBALS['conn'], $Query);
         if (mysqli_num_rows($rs) > 0) {
